@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movies! Movies! Movies!</title>
+
+<style>
+
+body{
+font-family: "Trebuchet MS", sans-serif;
+background: linear-gradient(135deg,#3b004e,#6b37a3,#e7b1df);
+display:flex;
+justify-content:center;
+padding:40px;
+}
+
+.container{
+background:rgb(248, 234, 246);
+width:480px;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(28, 0, 49, 0.2);
+}
+
+h1{
+text-align:center;
+color:#444;
+margin-bottom:20px;
+}
+
+label{
+font-weight:bold;
+display:block;
+margin-top:15px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:5px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+margin-top:20px;
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:linear-gradient(45deg,#29003c,#b02bf8);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.03);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.deleteBtn{
+margin-top:10px;
+padding:6px;
+background:#ff4d4d;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.stars{
+font-size:30px;
+margin-top:10px;
+}
+
+.star{
+cursor:pointer;
+color:#ccc;
+transition:0.2s;
+}
+
+.star.active{
+color:gold;
+text-shadow:0 0 8px rgb(122, 108, 0);
+}
+
+.movieList{
+margin-top:25px;
+}
+
+.movieCard{
+background:#fafafa;
+border-radius:10px;
+padding:12px;
+margin-top:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+.ratingStars{
+color:gold;
+font-size:18px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>Movies! Movies! Movies!</h1>
+
+<label>Title</label>
+<input id="title">
+
+<label>Year</label>
+<input id="year">
+
+<label>Genre</label>
+<select id="genre">
+<option>Action</option>
+<option>Comedy</option>
+<option>Drama</option>
+<option>Fantasy</option>
+<option>Sci-Fi</option>
+<option>Horror</option>
+</select>
+
+<label>Rating</label>
+<div class="stars">
+<span class="star" data-value="1">★</span>
+<span class="star" data-value="2">★</span>
+<span class="star" data-value="3">★</span>
+<span class="star" data-value="4">★</span>
+<span class="star" data-value="5">★</span>
+</div>
+
+<button id="addBtn">Add Movie</button>
+
+<h2 style="text-align:center;margin-top:25px;">Movie List</h2>
+
+<div id="movieList" class="movieList"></div>
+
+</div>
+
+
+<script>
+
+let rating = 0
+
+const stars = document.querySelectorAll(".star")
+
+stars.forEach(star => {
+ star.addEventListener("click", () => {
+ rating = Number(star.dataset.value)
+ stars.forEach(s => s.classList.remove("active"))
+
+for(let i=0;i<rating;i++){
+stars[i].classList.add("active")
+}
+
+})
+
+})
+
+document.getElementById("addBtn").addEventListener("click", addMovie)
+
+function addMovie(){
+
+const title = document.getElementById("title").value
+const year = document.getElementById("year").value
+const genre = document.getElementById("genre").value
+
+let movies = JSON.parse(localStorage.getItem("movies")) || []
+
+let existingMovie = movies.find(m => m.title.toLowerCase() === title.toLowerCase())
+
+if(existingMovie){
+    let avgRating = Math.round((Number(existingMovie.rating) + rating) / 2)
+    existingMovie.year = year
+    existingMovie.genre = genre
+    existingMovie.rating = avgRating
+
+}else{
+
+const movie = {
+title:title,
+year:year,
+genre:genre,
+rating:rating
+}
+
+movies.push(movie)
+
+}
+
+localStorage.setItem("movies", JSON.stringify(movies))
+
+displayMovies()
+
+clearForm()
+
+}
+
+
+
+function deleteMovie(title){
+    let confirmDelete = confirm("Are you sure you want to delete this movie?")
+        if(confirmDelete){
+            let movies = JSON.parse(localStorage.getItem("movies")) || []
+            movies = movies.filter(movie => movie.title !== title)
+            localStorage.setItem("movies", JSON.stringify(movies))
+            displayMovies()
+
+}
+
+}
+
+function displayMovies(){
+    const movieList = document.getElementById("movieList")
+        let movies = JSON.parse(localStorage.getItem("movies")) || []
+        movieList.innerHTML=""
+        movies.forEach(movie=>{
+
+let stars = "★".repeat(movie.rating)
+
+movieList.innerHTML += `
+<div class="movieCard">
+<strong>${movie.title}</strong> (${movie.year})<br>
+${movie.genre}<br>
+Rating: <span class="ratingStars">${stars}</span><br>
+<button class="deleteBtn" onclick="deleteMovie('${movie.title}')">Delete</button>
+</div>
+`
+
+})
+
+}
+
+
+
+function clearForm(){
+
+document.getElementById("title").value=""
+document.getElementById("year").value=""
+
+stars.forEach(s=>s.classList.remove("active"))
+
+rating=0
+
+}
+
+
+displayMovies()
+
+</script>
+
+</body>
+</html>

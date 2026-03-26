@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="author" content="Your Name" />
+  <meta name="revised" content="March 27, 2026" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    .header {
+      background: lightblue;
+      padding: 10px;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar {
+      background: lightgreen;
+      width: 150px;
+      height: 200px;
+
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
+
+    .content {
+      background: lightyellow;
+      width: 300px;
+      height: 200px;
+
+      position: relative;
+      margin-left: 200px;
+      margin-top: -180px;
+
+      z-index: 1;
+    }
+
+    .notice {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: orange;
+      padding: 10px;
+      z-index: 2;
+    }
+
+    .footer {
+      background: lightblue;
+      padding: 10px;
+      opacity: 0.5;
+
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="header">Header</div>
+
+  <div class="sidebar">Sidebar</div>
+
+  <div class="content">
+    Main Content
+    <div class="notice">Notice!</div>
+  </div>
+
+  <div class="footer">Footer</div>
+
+</body>
+</html>
